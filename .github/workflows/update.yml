@@ -1,0 +1,51 @@
+
+name: 更新个人影视仓直播源
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'channels.json'
+      - 'pinned.json'
+      - 'blocked_urls.txt'
+      - 'update_live.py'
+      - '.github/workflows/update.yml'
+  schedule:
+    - cron: '23 1,13 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: iptv-list-update
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 本地单元测试
+        run: python -m unittest discover -s tests -v
+      - name: 读取上游并生成精选文件
+        run: python update_live.py
+      - name: 仅在频道列表变化时提交
+        run: |
+          if [ ! -f live.txt ]; then
+            echo 'live.txt missing; refusing to commit'
+            exit 1
+          fi
+          git add live.txt
+          if git diff --cached --quiet; then
+            echo 'NO_CHANGE: nothing to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'auto: refresh selected IPTV playlist'
+          git push
