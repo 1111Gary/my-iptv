@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "name": "现有可用源 zbds IPv4",
+      "url": "https://live.zbds.top/tv/iptv4.txt"
+    }
+  ],
+  "hls_only": true,
+  "max_lines_per_channel": 2,
+  "keep_previous_if_missing": true,
+  "groups": [
+    {
+      "name": "央视精选",
+      "channels": [
+        {"name": "CCTV5", "aliases": ["CCTV-5", "CCTV5体育"]},
+        {"name": "CCTV8", "aliases": ["CCTV-8", "CCTV8电视剧"]},
+        {"name": "CCTV13", "aliases": ["CCTV-13", "CCTV13新闻"]},
+        {"name": "CGTN"}
+      ]
+    },
+    {
+      "name": "卫视精选",
+      "channels": [
+        {"name": "东方卫视"},
+        {"name": "东南卫视"},
+        {"name": "安徽卫视"}
+      ]
+    }
+  ]
+}
